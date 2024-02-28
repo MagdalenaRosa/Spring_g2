@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/main-menu}"></div>
+
+    <h1 th:text="${product.getName()}"></h1>
+    <p>
+      <img th:src="${product.getImgUri()}" width="100" />
+    </p>
+    <h2>Opis productu:</h2>
+    <div>
+      <span th:text="${product.getDesc()}"></span>
+      <span th:text="${product.getPrice()}"></span> PLN
+    </div>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+
+<form method="post">
+  <input
+    name="name"
+    placeholder="product name "
+    th:value="${product !=null ? product.getName(): ''}"
+  />
+  <input name="desc" th:value="${product!=null? product.getDesc(): ''}" />
+  <input name="imgUri" th:value="${product!=null? product.getImgUri(): ''}" />
+  <input name="price" th:value="${product!=null? product.getPrice(): ''}" />
+  <button>Submit</button>
+</form>
