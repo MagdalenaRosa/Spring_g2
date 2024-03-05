@@ -1,12 +1,12 @@
 
-<form method="post">
+<form method="post" th:action="${action}">
   <input
     name="name"
     placeholder="product name "
     th:value="${product !=null ? product.getName(): ''}"
   />
-  <input name="desc" th:value="${product!=null? product.getDesc(): ''}" />
-  <input name="imgUri" th:value="${product!=null? product.getImgUri(): ''}" />
-  <input name="price" th:value="${product!=null? product.getPrice(): ''}" />
+  <input placeholder="product description" name="desc" th:value="${product!=null? product.getDesc(): ''}" />
+  <input name="imgUri" placeholder="product image url" th:value="${product!=null? product.getImgUri(): ''}" />
+  <input name="price" placeholder="product price" th:value="${product!=null? product.getPrice(): ''}" />
   <button>Submit</button>
 </form>
