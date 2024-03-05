@@ -1,0 +1,14 @@
+<form method="post" th:action="${action}">
+  <input
+    name="name"
+    placeholder="category name "
+    th:value="${category !=null ? category.getName(): ''}"
+  />
+  <input
+    placeholder="category description"
+    name="desc"
+    th:value="${category!=null? category.getDesc(): ''}"
+  />
+
+  <button>Submit</button>
+</form>

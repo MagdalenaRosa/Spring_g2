@@ -51,7 +51,6 @@ public class ProductController {
             model.addAttribute("product", optionalProduct.get());
         }
         return "/product/product";
-
     }
 
     // insert product
