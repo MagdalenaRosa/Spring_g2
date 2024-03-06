@@ -13,17 +13,35 @@
   </head>
   <body>
     <div th:replace="~{fragments/main-menu}"></div>
-
-    <ul>
-      <li th:each="product: ${productList}">
-        <span th:text="${product.getName()}"></span>
-        <a th:href="'/productDetail?productId='+${product.getId()}"
-          >[show more]</a
+    <div class="p-3 m-0 border-0 bd-example m-0 border-0">
+      <h1>Add new Product:</h1>
+      <div th:replace="~{product/save-product}"></div>
+      <h2>List of products</h2>
+      <ul class="list-group">
+        <li
+          class="list-group-item d-flex justify-content-between align-items-center"
+          th:each="product: ${productList}"
         >
-        <a th:href="'/removeProduct?productId='+${product.getId()}">[remove]</a>
-        <a th:href="'/editProduct?productId='+${product.getId()}">[edit]</a>
-      </li>
-    </ul>
-    <div th:replace="~{product/save-product}"></div>
+          <span th:text="${product.getName()}"></span>
+          <span>
+            <a
+              class="btn btn-outline-primary"
+              th:href="'/productDetail?productId='+${product.getId()}"
+              >show more</a
+            >
+            <a
+              class="btn btn-outline-success"
+              th:href="'/editProduct?productId='+${product.getId()}"
+              >edit</a
+            >
+            <a
+              class="btn btn-outline-danger"
+              th:href="'/removeProduct?productId='+${product.getId()}"
+              >remove</a
+            >
+          </span>
+        </li>
+      </ul>
+    </div>
   </body>
 </html>

@@ -9,12 +9,31 @@
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
+
     <title>Document</title>
   </head>
   <body>
     <div th:replace="~{fragments/main-menu}"></div>
-    <h1>Contact Info</h1>
-    <span th:text="${phone}"></span>
-    <span th:text="${email}"></span>
+
+    <div
+      class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden"
+    >
+      <div class="my-3 p-3">
+        <h2 class="display-5">Phone Number</h2>
+        <p class="lead" th:text="${phone}"></p>
+      </div>
+      <div
+        class="bg-info box-shadow mx-auto"
+        style="width: 60%; height: 20vh; border-radius: 10rem 10rem 0 0"
+      ></div>
+    </div>
+    <div
+      class="bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden"
+    >
+      <div class="my-3 py-3">
+        <h2 class="display-5">Email</h2>
+        <p class="lead" th:text="${email}"></p>
+      </div>
+    </div>
   </body>
 </html>

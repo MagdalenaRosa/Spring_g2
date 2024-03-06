@@ -1,12 +1,43 @@
-
-<form method="post" th:action="${action}">
-  <input
-    name="name"
-    placeholder="product name "
-    th:value="${product !=null ? product.getName(): ''}"
-  />
-  <input placeholder="product description" name="desc" th:value="${product!=null? product.getDesc(): ''}" />
-  <input name="imgUri" placeholder="product image url" th:value="${product!=null? product.getImgUri(): ''}" />
-  <input name="price" placeholder="product price" th:value="${product!=null? product.getPrice(): ''}" />
-  <button>Submit</button>
+<form
+  method="post"
+  class="p-3 m-0 border-0 bd-example m-0 border-0"
+  th:action="${action}"
+>
+  <div class="input-group row g-3">
+    <div class="col-sm">
+      <input
+        class="form-control"
+        name="name"
+        placeholder="product name "
+        th:value="${product !=null ? product.getName(): ''}"
+      />
+    </div>
+    <div class="col-sm">
+      <input
+        class="form-control"
+        name="desc"
+        placeholder="product description "
+        th:value="${product!=null? product.getDesc(): ''}"
+      />
+    </div>
+    <div class="col-sm">
+      <input
+        class="form-control"
+        name="imgUri"
+        placeholder="product image "
+        th:value="${product!=null? product.getImgUri(): ''}"
+      />
+    </div>
+    <div class="col-sm">
+      <input
+        class="form-control"
+        name="price"
+        placeholder="product price "
+        th:value="${product!=null? product.getPrice(): ''}"
+      />
+    </div>
+    <div class="col-sm">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </div>
 </form>
