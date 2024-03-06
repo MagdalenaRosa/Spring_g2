@@ -1,3 +1,8 @@
+<div>
+  <ul>
+    <li th:each="error : ${errors}" th:text="${error}" class="text-danger"></li>
+  </ul>
+</div>
 <form
   method="post"
   class="p-3 m-0 border-0 bd-example m-0 border-0"

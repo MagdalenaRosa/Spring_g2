@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,6 +17,7 @@ import com.example.demo.exceptions.ProductArleadyExistsException;
 import com.example.demo.model.Product;
 import com.example.demo.services.ProductService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -55,12 +58,26 @@ class ProductController {
 
     // insert product
     @PostMapping("/saveProduct")
-    public String saveProduct(Product productForm, RedirectAttributes redirectAttributes) {
-        try {
-            productService.insertProduct(productForm);
-        } catch (ProductArleadyExistsException e) {
-            redirectAttributes.addFlashAttribute("error", "Product arleady exists");
+    public String saveProduct(@Valid Product productForm, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            var errors = bindingResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
+
+            if (productService.existProductByName(productForm)) {
+                redirectAttributes.addFlashAttribute("error", "Product exists");
+            } else {
+                redirectAttributes.addFlashAttribute("errors", errors);
+                redirectAttributes.addFlashAttribute("product", productForm);
+            }
+        } else {
+            try {
+                productService.insertProduct(productForm);
+            } catch (ProductArleadyExistsException e) {
+                redirectAttributes.addFlashAttribute("error", "Product arleady exists");
+            }
         }
+
         return "redirect:/product";
     }
 
@@ -76,7 +93,7 @@ class ProductController {
 
     // zapisywanie edytowanego producktu
     @PostMapping("/editedProduct")
-    public String saveEditedProdutc(@RequestParam Long productId, Product productForm) {
+    public String saveEditedProdutc(@RequestParam Long productId, @Valid Product productForm) {
 
         productService.updateCurrentProduct(productForm, productId);
         var url = "redirect:/productDetail?productId=" + productId;
