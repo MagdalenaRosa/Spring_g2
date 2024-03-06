@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class HelpController {
+class HelpController {
 
     private static final String PHONE = "+48 678 889 999";
     private static final String EMAIL = "info@g.com";

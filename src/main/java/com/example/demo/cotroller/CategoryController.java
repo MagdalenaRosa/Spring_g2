@@ -5,7 +5,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.exceptions.CategoryArleadyExistException;
 import com.example.demo.model.Category;
 import com.example.demo.services.CategoryService;
 
@@ -13,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-public class CategoryController {
+class CategoryController {
     final CategoryService categoryService;
 
     @GetMapping("/categories")
@@ -36,8 +38,12 @@ public class CategoryController {
     }
 
     @PostMapping("/saveCategory")
-    public String saveCategory(Category category) {
-        categoryService.insertCategory(category);
+    public String saveCategory(Category category, RedirectAttributes redirectAttributes) {
+        try {
+            categoryService.insertCategory(category);
+        } catch (CategoryArleadyExistException e) {
+            redirectAttributes.addFlashAttribute("error", "Category arleady exists");
+        }
         return "redirect:/categories";
     }
 
@@ -49,9 +55,21 @@ public class CategoryController {
 
     @GetMapping("/editCategory/{id}")
     public String editCategory(@PathVariable Long id, Model model) {
-        model.addAttribute("action", "/editedCategory");
+        var optionalCategory = categoryService.findByCategoryId(id);
+        if (optionalCategory.isEmpty()) {
+            model.addAttribute("error", "Edit of category with id=" + id + " is NOT posible");
+            return "/error-page";
+        }
+        model.addAttribute("action", "/editedCategory/" + id);
+        model.addAttribute("category", optionalCategory.get());
         return "/categories/edit-category";
+    }
 
+    @PostMapping("/editedCategory/{id}")
+    public String saveEditedCategory(@PathVariable Long id, Category category) {
+        categoryService.updateCurrentCategory(category, id);
+        var url = "redirect:/categoryDetails/" + id;
+        return url;
     }
 
 }

@@ -13,6 +13,9 @@
   </head>
   <body>
     <div th:replace="~{fragments/main-menu}"></div>
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+      <span th:text="${error}"></span>
+    </div>
     <div th:replace="~{categories/save-category}"></div>
     <ul>
       <li th:each="category: ${categories}">

@@ -9,25 +9,22 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.exceptions.ProductArleadyExistsException;
 import com.example.demo.model.Product;
+import com.example.demo.services.ProductService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
-public class ProductController {
-
-    List<Product> productList = new ArrayList<>();
-
-    ProductController() {
-        var p1 = new Product(1, "Phone", "desc", "imgage", BigDecimal.valueOf(240.99));
-        productList.add(p1);
-        productList.add(new Product(2, "TV", "desc", "imgage", BigDecimal.valueOf(240.99)));
-        // productList.addAll(List.of(p1,p2));
-
-    }
+@RequiredArgsConstructor
+class ProductController {
+    final ProductService productService;
 
     @GetMapping("/product")
     public String showAllProducts(Model model) {
-        model.addAttribute("productList", productList);
+        model.addAttribute("productList", productService.findAllProducts());
         model.addAttribute("title", "List of products");
         model.addAttribute("action", "/saveProduct");
 
@@ -35,78 +32,67 @@ public class ProductController {
     }
 
     @GetMapping("/removeProduct")
-    public String removeProduct(@RequestParam Integer productId) {
-        productList.removeIf(exiistProduct -> exiistProduct.getId().equals(productId));
+    public String removeProduct(@RequestParam Long productId) {
+        productService.removeProduct(productId);
         return "redirect:/product";
     }
 
     // todo:
     @GetMapping("/productDetail")
-    public String showProductDetailByID(@RequestParam Integer productId, Model model) {
+    public String showProductDetailByID(@RequestParam Long productId, Model model) {
 
-        var optionalProduct = productList.stream()
-                .filter(product -> product.getId().equals(productId)).findFirst();
+        var optionalProduct = productService.findProductById(productId);
 
         if (optionalProduct.isPresent()) {
             model.addAttribute("product", optionalProduct.get());
+            return "/product/product";
+        } else {
+            model.addAttribute("error", "Current product with id=" + productId + " doesn't exist");
+            return "/error-page";
         }
-        return "/product/product";
+
     }
 
     // insert product
     @PostMapping("/saveProduct")
-    public String saveProduct(Product productForm) {
-        var productExist = productList.stream().map(product -> product.getName())
-                .anyMatch(dbProduct -> productForm.getName().equals(dbProduct));
-
-        if (!productExist) {
-            var nextId = 1;
-            if (!productList.isEmpty()) {
-                var lastId = productList.size() - 1;
-                nextId = productList.get(lastId).getId() + 1;
-            }
-            productForm.setId(nextId);
-            productList.add(productForm);
-
+    public String saveProduct(Product productForm, RedirectAttributes redirectAttributes) {
+        try {
+            productService.insertProduct(productForm);
+        } catch (ProductArleadyExistsException e) {
+            redirectAttributes.addFlashAttribute("error", "Product arleady exists");
         }
-
         return "redirect:/product";
     }
 
     // edycja productktu
     @GetMapping("/editProduct")
-    public String editProduct(@RequestParam Integer productId, Model model) {
+    public String editProduct(@RequestParam Long productId, Model model) {
         model.addAttribute("title", "Edit current product");
         model.addAttribute("action", "/editedProduct?productId=" + productId);
 
-        bindProductToModel(productId, model);
-        return "/product/edit-product";
+        return bindProductToModel(productId, model);
+
     }
 
     // zapisywanie edytowanego producktu
     @PostMapping("/editedProduct")
-    public String saveEditedProdutc(@RequestParam Integer productId, Product productForm) {
-        productList = productList.stream().map(
-                product -> {
-                    if (product.getId().equals(productId)) {
-                        productForm.setId(productId);
-                        return productForm;
-                    } else {
-                        return product;
-                    }
-                }).toList();
+    public String saveEditedProdutc(@RequestParam Long productId, Product productForm) {
+
+        productService.updateCurrentProduct(productForm, productId);
         var url = "redirect:/productDetail?productId=" + productId;
         return url;
 
     }
 
-    private void bindProductToModel(Integer productId, Model model) {
-        var optionalProduct = productList.stream().filter(dbProduct -> dbProduct.getId().equals(productId)).findFirst();
+    private String bindProductToModel(Long productId, Model model) {
+        var optionalProduct = productService.findProductById(productId);
         if (optionalProduct.isEmpty()) {
-            // todo:
+            model.addAttribute("error", "Product doesn't exist");
+            return "/error-page";
         } else {
             var product = optionalProduct.get();
             model.addAttribute("product", product);
+            return "/product/edit-product";
         }
 
     }

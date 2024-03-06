@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.exceptions.CategoryArleadyExistException;
 import com.example.demo.model.Category;
 import com.example.demo.repositories.CategoryRepository;
 
@@ -28,18 +29,23 @@ public class CategoryService {
         return categoryRepository.existsByName(category.getName());
     }
 
-    public void insertCategory(Category category) {
+    public void insertCategory(Category category) throws CategoryArleadyExistException {
         var categoryExist = existCategoryByCategoryName(category);
         if (!categoryExist) {
             category.setId(null);
             categoryRepository.save(category);
         } else {
-            // todo komunikat
+            throw new CategoryArleadyExistException();
         }
     }
 
     public void removeCategoryById(Long id) {
         categoryRepository.deleteById(id);
+    }
+
+    public void updateCurrentCategory(Category category, Long id) {
+        category.setId(id);
+        categoryRepository.save(category);
     }
 
 }

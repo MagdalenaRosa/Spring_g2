@@ -13,6 +13,9 @@
   </head>
   <body>
     <div th:replace="~{fragments/main-menu}"></div>
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+      <span th:text="${error}"></span>
+    </div>
     <div class="p-3 m-0 border-0 bd-example m-0 border-0">
       <h1>Add new Product:</h1>
       <div th:replace="~{product/save-product}"></div>
