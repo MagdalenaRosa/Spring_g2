@@ -13,10 +13,9 @@
   </head>
   <body>
     <div th:replace="~{fragments/main-menu}"></div>
-    <div th:if="${error}" class="alert alert-danger" role="alert">
-      <span th:text="${error}"></span>
-    </div>
+
     <div class="p-3 m-0 border-0 bd-example m-0 border-0">
+      <div th:replace="~{fragments/search}"></div>
       <h1>Add new Product:</h1>
       <div th:replace="~{product/save-product}"></div>
       <h2>List of products</h2>
@@ -29,22 +28,23 @@
           <span>
             <a
               class="btn btn-outline-primary"
-              th:href="'/productDetail?productId='+${product.getId()}"
+              th:href="'/productDetail/'+${product.getId()}"
               >show more</a
             >
             <a
               class="btn btn-outline-success"
-              th:href="'/editProduct?productId='+${product.getId()}"
+              th:href="'/editProduct/'+${product.getId()}"
               >edit</a
             >
             <a
               class="btn btn-outline-danger"
-              th:href="'/removeProduct?productId='+${product.getId()}"
+              th:href="'/removeProduct/'+${product.getId()}"
               >remove</a
             >
           </span>
         </li>
       </ul>
     </div>
+    <script th:src="@{/search.js}"></script>
   </body>
 </html>

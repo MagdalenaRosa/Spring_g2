@@ -13,17 +13,36 @@
   </head>
   <body>
     <div th:replace="~{fragments/main-menu}"></div>
-    <div th:if="${error}" class="alert alert-danger" role="alert">
-      <span th:text="${error}"></span>
+    <div class="p-3 m-0 border-0 bd-example m-0 border-0">
+      <div th:replace="~{fragments/search}"></div>
+      <h1>Add new category:</h1>
+      <div th:replace="~{categories/save-category}"></div>
+      <h2>List of categories:</h2>
+      <ul class="list-group">
+        <li
+          th:each="category: ${categories}"
+          class="list-group-item d-flex justify-content-between align-items-center"
+        >
+          <span th:text="${category.getName()}"></span>
+          <span>
+            <a
+              th:href="'/categoryDetails/'+${category.getId()}"
+              class="btn btn-outline-primary"
+              >Show more
+            </a>
+            <a
+              th:href="'/removeCategory/'+${category.getId()}"
+              class="btn btn-outline-danger"
+              >Remove
+            </a>
+            <a
+              th:href="'/editCategory/'+${category.getId()}"
+              class="btn btn-outline-success"
+              >Edit
+            </a>
+          </span>
+        </li>
+      </ul>
     </div>
-    <div th:replace="~{categories/save-category}"></div>
-    <ul>
-      <li th:each="category: ${categories}">
-        <span th:text="${category.getName()}"></span>
-        <a th:href="'/categoryDetails/'+${category.getId()}">Show more </a>
-        <a th:href="'/removeCategory/'+${category.getId()}">Remove </a>
-        <a th:href="'/editCategory/'+${category.getId()}">Edit </a>
-      </li>
-    </ul>
   </body>
 </html>

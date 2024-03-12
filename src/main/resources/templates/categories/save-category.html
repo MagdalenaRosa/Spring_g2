@@ -1,14 +1,35 @@
-<form method="post" th:action="${action}">
-  <input
-    name="name"
-    placeholder="category name "
-    th:value="${category !=null ? category.getName(): ''}"
-  />
-  <input
-    placeholder="category description"
-    name="desc"
-    th:value="${category!=null? category.getDesc(): ''}"
-  />
-
-  <button>Submit</button>
+<div th:if="${error}" class="alert alert-danger" role="alert">
+  <span th:text="${error}"></span>
+</div>
+<div>
+  <ul>
+    <li th:each="error : ${errors}" th:text="${error}" class="text-danger"></li>
+  </ul>
+</div>
+<form
+  method="post"
+  th:action="${action}"
+  class="p-3 m-0 border-0 bd-example m-0 border-0"
+>
+  <div class="input-group row g-3">
+    <div class="col-sm">
+      <input
+        name="name"
+        class="form-control"
+        placeholder="category name "
+        th:value="${category !=null ? category.getName(): ''}"
+      />
+    </div>
+    <div class="col-sm">
+      <input
+        class="form-control"
+        placeholder="category description"
+        name="desc"
+        th:value="${category!=null? category.getDesc(): ''}"
+      />
+    </div>
+    <div class="col-sm">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </div>
 </form>

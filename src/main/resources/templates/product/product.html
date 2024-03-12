@@ -31,6 +31,14 @@
 
               <p class="card-text" th:text="${product.getDesc()}"></p>
               <p class="card-text" th:text="${product.getPrice()}">PLN</p>
+              <p th:if="${product.getCategory()!=null}">
+                Category:
+                <a
+                  th:href="${'/categoryDetails/'+product.getCategory().getId()}"
+                  th:text="${product.getCategory().getName()}"
+                  class="card-link"
+                ></a>
+              </p>
             </div>
           </div>
         </div>

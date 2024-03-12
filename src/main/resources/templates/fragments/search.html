@@ -1,0 +1,26 @@
+<form
+  th:action="${searchAction}"
+  class="p-3 m-0 border-0 bd-example m-0 border-0"
+>
+  <div class="input-group row g-2">
+    <label>Search:</label>
+    <div class="col-sm">
+      <input
+        type="text"
+        name="keyword"
+        th:value="${keyword}"
+        required
+        class="form-control"
+      />
+    </div>
+    <div class="col-sm">
+      <input type="submit" value="Search" class="btn btn-primary" />
+      <input
+        type="button"
+        value="Clear"
+        th:attr="onclick= | clearFilter('${searchAction}')|"
+        class="btn btn-primary"
+      />
+    </div>
+  </div>
+</form>

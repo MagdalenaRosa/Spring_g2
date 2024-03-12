@@ -1,3 +1,6 @@
+<div th:if="${error}" class="alert alert-danger" role="alert">
+  <span th:text="${error}"></span>
+</div>
 <div>
   <ul>
     <li th:each="error : ${errors}" th:text="${error}" class="text-danger"></li>
@@ -40,6 +43,16 @@
         placeholder="product price "
         th:value="${product!=null? product.getPrice(): ''}"
       />
+    </div>
+    <div class="col-sm">
+      <select name="category" class="form-select">
+        <option
+          th:each="category: ${categories}"
+          th:selected="${product !=null && product.getCategory() !=null && category.getId()==product.getCategory().getId()}"
+          th:text="${category.getName()}"
+          th:value="${category.getId()}"
+        ></option>
+      </select>
     </div>
     <div class="col-sm">
       <button type="submit" class="btn btn-primary">Submit</button>
