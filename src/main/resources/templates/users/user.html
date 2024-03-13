@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <div th:replace="~{fragments/main-menu}"></div>
+    <h1>Personal info:</h1>
+    <div>
+      <span th:text="${user.getFirstName()+ ' '+ user.getLastName()}"></span>
+      <p th:text="${user.getEmail()}"></p>
+    </div>
+    <div>
+      <h2>Address:</h2>
+      <ul>
+        <li th:each="address: ${user.getAdress()}">
+          <span
+            th:text="${address.getZipCode()+' '+ address.getStreet()+','+address.getCity() }"
+          ></span>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <ul>
+        <li th:each="phone: ${user.getPhoneNumber()}">
+          <span th:text="${phone.getPrefix()+ ' '+ phone.getPhone()}"></span>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

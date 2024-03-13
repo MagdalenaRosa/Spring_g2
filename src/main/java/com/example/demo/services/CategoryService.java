@@ -17,8 +17,13 @@ public class CategoryService {
 
     final CategoryRepository categoryRepository;
 
-    public List<Category> showAllCategories() {
-        return categoryRepository.findAll();
+    public List<Category> showAllCategories(String keyword) {
+        if (keyword != null) {
+            return categoryRepository.findAll(keyword);
+        } else {
+            return categoryRepository.findAll();
+        }
+
     }
 
     public Optional<Category> findByCategoryId(Long id) {

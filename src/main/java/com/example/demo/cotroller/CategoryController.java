@@ -2,6 +2,7 @@ package com.example.demo.cotroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,9 +26,11 @@ class CategoryController {
     final ProductService productService;
 
     @GetMapping("/categories")
-    public String showAllCategories(Model model) {
+    public String showAllCategories(Model model, @Param("keyword") String keyword) {
         model.addAttribute("title", "List of Categories");
-        model.addAttribute("categories", categoryService.showAllCategories());
+        model.addAttribute("categories", categoryService.showAllCategories(keyword));
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("searchAction", "/categories");
         model.addAttribute("action", "/saveCategory");
         return "/categories/categories";
     }

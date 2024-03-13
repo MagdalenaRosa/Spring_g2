@@ -83,6 +83,8 @@ class ProductController {
     @GetMapping("/editProduct/{productId}")
     public String editProduct(@PathVariable Long productId, Model model) {
         model.addAttribute("title", "Edit current product");
+        model.addAttribute("categories", productService.findAllCategories());
+
         model.addAttribute("action", "/editedProduct/" + productId);
 
         return bindProductToModel(productId, model);
