@@ -13,13 +13,19 @@
   </head>
   <body>
     <div th:replace="~{fragments/main-menu}"></div>
-    <div>
-      <ul>
-        <li th:each="user :${users}">
-          <span th:text="${user.getFirstName()}"></span>
-          <span th:text="${user.getLastName()}"></span>
-          <a th:href="${'/user/id/'+ user.getId()}">Show more</a>
-          <a th:href="${'/user/edit/'+ user.getId()}">Edit</a>
+    <div class="p-3 m-0 border-0 bd-example m-0 border-0">
+      <h1>List of users: </h1>
+      <ul class="list-group">
+        <li th:each="user :${users}"
+        class="list-group-item d-flex justify-content-between align-items-center"
+        >
+          <span th:text="${user.getFirstName()+' '+ user.getLastName()}"></span>
+          <span>
+            <a th:href="${'/user/id/'+ user.getId()}"               class="btn btn-outline-primary">Show more</a>
+            <a th:href="${'/user/edit/'+ user.getId()}"           class="btn btn-outline-success">Edit</a>
+            <a th:href="${'/user/remove/'+ user.getId()}"              class="btn btn-outline-danger">Remove</a>
+          </span>
+        
         </li>
       </ul>
     </div>

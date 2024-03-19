@@ -13,8 +13,14 @@
   </head>
   <body>
     <div th:replace="~{fragments/main-menu}"></div>
-    <h1>Personal info:</h1>
-    <div>
+   
+    <div class="p-3 m-0 border-0 bd-example m-0 border-0">
+      <div class="card mb-3 card text-bg-secondary mb-3">
+        <div class="row g-0">
+          <div class="col-md-7">
+            <div class="card-body">
+    <div >
+      <h1 cclass="card-header">Personal info:</h1>
       <span th:text="${user.getFirstName()+ ' '+ user.getLastName()}"></span>
       <p th:text="${user.getEmail()}"></p>
     </div>
@@ -22,7 +28,7 @@
       <h2>Address:</h2>
       <ul>
         <li th:each="address: ${user.getAdress()}">
-          <span
+          <span class="card-text"
             th:text="${address.getZipCode()+' '+ address.getStreet()+','+address.getCity() }"
           ></span>
         </li>
@@ -35,5 +41,7 @@
         </li>
       </ul>
     </div>
+    <a th:href="${'/user/edit/'+ user.getId()}"  class="btn btn-primary">Edit User</a>
+            </div></div></div></div></div>
   </body>
 </html>

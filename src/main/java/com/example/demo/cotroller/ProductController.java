@@ -51,6 +51,8 @@ class ProductController {
             return "/product/product";
         } else {
             model.addAttribute("error", "Current product with id=" + productId + " doesn't exist");
+            model.addAttribute("errorAction", "/product");
+            model.addAttribute("return", "Return to list of products");
             return "/error-page";
         }
 
@@ -114,6 +116,8 @@ class ProductController {
         var optionalProduct = productService.findProductById(productId);
         if (optionalProduct.isEmpty()) {
             model.addAttribute("error", "Product doesn't exist");
+            model.addAttribute("errorAction", "/product");
+            model.addAttribute("return", "Return to list of products");
             return "/error-page";
         } else {
             var product = optionalProduct.get();

@@ -1,6 +1,5 @@
 package com.example.demo.cotroller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
@@ -40,6 +39,8 @@ class CategoryController {
         var optionalCategory = categoryService.findByCategoryId(id);
         if (optionalCategory.isEmpty()) {
             model.addAttribute("error", "Current category witj id=" + id + " doesn't exist");
+            model.addAttribute("errorAction", "/categories");
+            model.addAttribute("return", "Return to list of categories");
             return "/error-page";
         }
         model.addAttribute("category", categoryService.findByCategoryId(id).get());
@@ -80,6 +81,8 @@ class CategoryController {
         var optionalCategory = categoryService.findByCategoryId(id);
         if (optionalCategory.isEmpty()) {
             model.addAttribute("error", "Edit of category with id=" + id + " is NOT posible");
+            model.addAttribute("errorAction", "/categories");
+            model.addAttribute("return", "Return to list of categories");
             return "/error-page";
         }
         model.addAttribute("action", "/editedCategory/" + id);

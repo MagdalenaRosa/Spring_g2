@@ -20,7 +20,11 @@
           <span class="text-danger">Opps!</span> Page not found.
         </p>
         <p class="lead" th:text="${error}"></p>
-        <a href="/categories" class="btn btn-primary">Categories</a>
+        <a th:href="${errorAction}" class="btn btn-primary" th:text="${return}">
+      
+        </a>
+        
+   
       </div>
     </div>
   </body>

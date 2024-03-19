@@ -22,8 +22,19 @@ public class UserService {
     public Optional<User> findUserById(Long id) {
         return userRepository.findById(id);
     }
+    public boolean existByEmail(String email){
+        return userRepository.existsByEmail(email);
+
+    }
 
     public void saveUser(User user) {
         userRepository.save(user);
+    }
+    public  void updateUser(Long id, User user){
+        user.setId(id);
+        userRepository.save(user);
+    }
+    public void removeUserById(Long id){
+        userRepository.deleteById(id);
     }
 }
