@@ -16,8 +16,11 @@
 
     <div class="p-3 m-0 border-0 bd-example m-0 border-0">
       <div th:replace="~{fragments/search}"></div>
-      <h1>Add new Product:</h1>
-      <div th:replace="~{product/save-product}"></div>
+      <div sec:authorize="hasRole('ROLE_MENAGER')" >
+        <h1>Add new Product:</h1>
+        <div th:replace="~{product/save-product}" ></div>
+      </div>
+      
       <h2>List of products</h2>
       <ul class="list-group">
         <li

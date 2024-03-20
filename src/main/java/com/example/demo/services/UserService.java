@@ -26,7 +26,10 @@ public class UserService {
         return userRepository.existsByEmail(email);
 
     }
-
+    public Optional<User> findUserByEmail(String email)
+{
+    return userRepository.findByEmail(email);
+}
     public void saveUser(User user) {
         userRepository.save(user);
     }

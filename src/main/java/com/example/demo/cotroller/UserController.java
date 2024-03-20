@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.config.AuthPasswordConfig;
 import com.example.demo.mappers.UserSaveDtoToUserMapper;
 import com.example.demo.model.dto.UserSaveDto;
 import com.example.demo.services.UserService;
@@ -21,6 +22,7 @@ import lombok.var;
 @RequiredArgsConstructor
 class UserController {
     final UserService userService;
+    final AuthPasswordConfig authPasswordConfig;
 
     @GetMapping("/users")
     public String showAllUsers(Model model) {
@@ -78,6 +80,8 @@ class UserController {
     @PostMapping("/user/save")
     public String insertUser( @Valid UserSaveDto userSaveDto,BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         var user = UserSaveDtoToUserMapper.fromUserDtoToUserEntity(userSaveDto);
+//  hash dla hasła
+        user.setPassword(authPasswordConfig.passwordEncoder().encode(user.getPassword()));
         if(userService.existByEmail(userSaveDto.getEmail())){
             redirectAttributes.addFlashAttribute("errors","Email: "+ userSaveDto.getEmail()+" arleady exists");
             user.setEmail(null);
@@ -90,8 +94,9 @@ class UserController {
             redirectAttributes.addFlashAttribute("user",user);
             return "redirect:/user/add";
         }else{
+            user.setRole("CLIENT");
             userService.saveUser(user);
-            return "redirect:/users";
+            return "redirect:/";
         }
     }
     @GetMapping("/user/remove/{id}")

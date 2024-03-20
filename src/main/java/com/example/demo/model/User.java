@@ -31,6 +31,7 @@ public class User {
     @Column(unique = true)
     private String email;
     private String password;
+    private String role;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_address_pivot", joinColumns = {
