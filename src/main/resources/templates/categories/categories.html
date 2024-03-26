@@ -15,8 +15,11 @@
     <div th:replace="~{fragments/main-menu}"></div>
     <div class="p-3 m-0 border-0 bd-example m-0 border-0">
       <div th:replace="~{fragments/search}"></div>
+    <div sec:authorize="hasAnyRole('ROLE_MENAGER','ROLE_ADMIN')">
       <h1>Add new category:</h1>
       <div th:replace="~{categories/save-category}"></div>
+    </div>
+      
       <h2>List of categories:</h2>
       <ul class="list-group">
         <li
@@ -30,12 +33,12 @@
               class="btn btn-outline-primary"
               >Show more
             </a>
-            <a
+            <a sec:authorize="hasAnyRole('ROLE_MENAGER','ROLE_ADMIN')"
               th:href="'/removeCategory/'+${category.getId()}"
               class="btn btn-outline-danger"
               >Remove
             </a>
-            <a
+            <a sec:authorize="hasAnyRole('ROLE_MENAGER','ROLE_ADMIN')"
               th:href="'/editCategory/'+${category.getId()}"
               class="btn btn-outline-success"
               >Edit
@@ -44,6 +47,26 @@
         </li>
       </ul>
     </div>
-    <script th:src="@{/search.js}"></script>
+    <div>
+      <div class="row justify-content-center">
+        <div class="col-md-10">
+          <div> Total number of products: <span th:text="${items}"></span></div>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-auto">
+          <ul class="pagination">
+          <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, pages!=null ? pages: 1)}" th:class="${pageNumber==currentPage} ? 'active':'' " >
+            <a th:href="@{'/categories/'+${pageNumber}}" th:text="${pageNumber}" class="page-link"></a>
+          </li>  
+          </ul>
+        </div>
+      </div>
+    </div>
+    <script >
+      function clearFilter(searchAction) {
+  window.location.href = searchAction;
+}
+    </script>
   </body>
 </html>

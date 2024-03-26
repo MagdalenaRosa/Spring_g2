@@ -1,7 +1,9 @@
 package com.example.demo.cotroller;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,17 +25,35 @@ import lombok.RequiredArgsConstructor;
 class ProductController {
     final ProductService productService;
 
+
     @GetMapping("/product")
-    public String showAllProducts(Model model, @Param("keyword") String keyword) {
-        model.addAttribute("productList", productService.findAllProducts(keyword));
+    public String showAllProducts(Model model, @Param("keyword") String keyword){
+        return showAllProductsByPageNumber(model, keyword, 1);
+        
+    }
+
+
+    @GetMapping("/product/{pageNumber}")
+    public String showAllProductsByPageNumber(Model model, @Param("keyword") String keyword, @PathVariable int pageNumber) {
+
+        Page<Product> producktPage=productService.findAllProducts(keyword, pageNumber);
+        int totalPages= producktPage.getTotalPages();
+        model.addAttribute("productList", producktPage.getContent());
         model.addAttribute("title", "List of products");
         model.addAttribute("action", "/saveProduct");
         model.addAttribute("categories", productService.findAllCategories());
         model.addAttribute("keyword", keyword);
         model.addAttribute("searchAction", "/product");
+        model.addAttribute("items", producktPage.getTotalElements());
+        if(totalPages>0){
+            model.addAttribute("pages", totalPages);
+        }else{
+            model.addAttribute("pages", 1);
+        }
+        model.addAttribute("currentPage", pageNumber);
         return "/product/products";
     }
-
+@Secured({"ROLE_MANAGER","ROLE_ADMIN"})
     @GetMapping("/removeProduct/{productId}")
     public String removeProduct(@PathVariable Long productId) {
         productService.removeProduct(productId);
@@ -41,6 +61,7 @@ class ProductController {
     }
 
     // todo:
+
     @GetMapping("/productDetail/{productId}")
     public String showProductDetailByID(@PathVariable Long productId, Model model) {
 
@@ -57,8 +78,7 @@ class ProductController {
         }
 
     }
-
-    // insert product
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})    // insert product
     @PostMapping("/saveProduct")
     public String saveProduct(@Valid Product productForm, BindingResult bindingResult,
             RedirectAttributes redirectAttributes) {
@@ -82,7 +102,7 @@ class ProductController {
     }
 
     // edycja productktu
-    @GetMapping("/editProduct/{productId}")
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})    @GetMapping("/editProduct/{productId}")
     public String editProduct(@PathVariable Long productId, Model model) {
         model.addAttribute("title", "Edit current product");
         model.addAttribute("categories", productService.findAllCategories());
@@ -94,7 +114,8 @@ class ProductController {
     }
 
     // zapisywanie edytowanego producktu
-    @PostMapping("/editedProduct/{productId}")
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
+        @PostMapping("/editedProduct/{productId}")
     public String saveEditedProdutc(@PathVariable Long productId, @Valid Product productForm,
             BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 

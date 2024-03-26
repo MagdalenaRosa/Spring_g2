@@ -3,17 +3,12 @@ package com.example.demo.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configurers.userdetails.DaoAuthenticationConfigurer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-
 import com.example.demo.services.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
+@EnableMethodSecurity(securedEnabled = true,jsr250Enabled = true)
 public class SecurityConfig {
     final UserService userService;
     final AuthPasswordConfig authPasswordConfig;
@@ -29,7 +25,7 @@ public class SecurityConfig {
     // public TestBean testBean(){
     //     return new TestBean();
     // }
-    private static final String[] PUBLIC_URI={"/","/product","/categories","/contact","/productDetail/{id}","/categoryDetails/{id}","/user/add","/user/save"};
+    private static final String[] PUBLIC_URI={"/","/product","/product/{pageNumber}","/categories","/categories/{pageNumber}","/contact","/productDetail/{id}","/categoryDetails/{id}","/user/add","/user/save"};
 
     // @Bean
     // public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
@@ -58,7 +54,7 @@ public class SecurityConfig {
             email -> userService.findUserByEmail(email)
             .map(user -> User.withUsername(user.getEmail())
                 .password(user.getPassword())
-                .roles(user.getRole())
+                .roles(user.getRole().name())
                 .build()
             ).orElseThrow(() ->  new UsernameNotFoundException(""))
         );

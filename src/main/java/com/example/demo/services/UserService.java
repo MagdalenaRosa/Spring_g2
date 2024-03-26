@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.repositories.UserRepository;
 
@@ -39,5 +40,13 @@ public class UserService {
     }
     public void removeUserById(Long id){
         userRepository.deleteById(id);
+    }
+    public void changeUserRole(Long id, Role role)
+    {
+        User  user = userRepository.findById(id).orElse(null);
+        if(user!= null){
+            user.setRole(role);
+            userRepository.save(user);
+        }
     }
 }

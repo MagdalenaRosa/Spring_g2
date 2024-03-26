@@ -3,6 +3,10 @@ package com.example.demo.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.tomcat.websocket.PerMessageDeflate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.exceptions.ProductArleadyExistsException;
@@ -19,11 +23,12 @@ public class ProductService {
     final ProductRepository productRepository;
     final CategoryRepository categoryRepository;
 
-    public List<Product> findAllProducts(String keyword) {
+    public Page<Product> findAllProducts(String keyword,int pageNumber) {
+        Pageable page= PageRequest.of(pageNumber-1,5);
         if (keyword != null) {
-            return productRepository.findAll(keyword);
+            return productRepository.findAll(keyword,page);
         } else {
-            return productRepository.findAll();
+            return productRepository.findAll(page);
         }
 
     }

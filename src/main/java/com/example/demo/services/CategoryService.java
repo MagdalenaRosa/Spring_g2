@@ -3,6 +3,9 @@ package com.example.demo.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.exceptions.CategoryArleadyExistException;
@@ -17,11 +20,12 @@ public class CategoryService {
 
     final CategoryRepository categoryRepository;
 
-    public List<Category> showAllCategories(String keyword) {
+    public Page<Category> showAllCategories(String keyword,int pageNumber) {
+         Pageable page= PageRequest.of(pageNumber-1,10);
         if (keyword != null) {
-            return categoryRepository.findAll(keyword);
+            return categoryRepository.findAll(keyword,page);
         } else {
-            return categoryRepository.findAll();
+            return categoryRepository.findAll(page);
         }
 
     }

@@ -15,6 +15,7 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" sec:authorize="hasRole('ROLE_ADMIN')" href="/users">users</a>
+               <!-- <a class="nav-link" href="/users">users</a> -->
       </li>
       <li class="nav-item">
         <a class="nav-link" sec:authorize="isAnonymous()" href="/user/add" >Register</a>
@@ -24,6 +25,11 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" sec:authorize="isAuthenticated()" href="/logout">Logout</a>
+      </li>
+      <li class="nav-item">
+        <span sec:authorize="isAuthenticated()" class="nav-link">
+          Logged user : <span sec:authentication="name"></span>
+        </span>
       </li>
     </ul>
   </div>
