@@ -43,7 +43,9 @@ public class User {
     private List<Adresses> adress;
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userID")
+   @JoinTable(name = "user_phone_pivot", joinColumns = {
+            @JoinColumn(name = "userID")
+    }, inverseJoinColumns = { @JoinColumn(name = "phoneID") })
     private List<PhoneNumber> phoneNumber;
 
 }

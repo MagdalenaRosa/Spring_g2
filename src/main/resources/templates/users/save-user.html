@@ -12,6 +12,7 @@
 <body>
   <div th:replace="~{fragments/main-menu}"></div>
   <!-- błedy formularza -->
+  <span th:text="${message}"></span>
   <div>
     <ul>
       <li th:each="error : ${errors}" th:text="${error}" class="text-danger"></li>
@@ -49,7 +50,20 @@
         <small id="passwordMatchMessage"></small>
         </div>
       </div>
+      <!-- keep pass and role  -->
+      <div th:if="${user!=null && user.getId()!=null}">
+        <label for="pass"></label>
+        <input type="password"  name="password" th:value="${user!=null ? user.getPassword():''}" readonly oncopy="return false;" >
 
+      </div>
+
+
+
+
+
+      <div th:if="${user!=null && user.getId()!=null}"> 
+        <input type="text" name="role" th:value="${userRole}" readonly/>
+    </div>
 
 
 

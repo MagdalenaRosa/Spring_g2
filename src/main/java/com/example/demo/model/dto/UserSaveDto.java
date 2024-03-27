@@ -29,4 +29,6 @@ public class UserSaveDto {
     private String prefix;
     @NotBlank(message = "Phone number is required")
     private String phone;
+    public String role;
+
 }

@@ -12,6 +12,37 @@
     <title>Document</title>
 </head>
 <body>
-    <p th:text="${user.role}"></p>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 offset-md-4">
+        <div class="card mt-5">
+          <div class="card-body">
+            <h2> Change role for users: 
+              <span th:text="${user.firstName}+ ' '+ ${user.lastName}"></span>
+            </h2>
+            <p class="card-text" th:text="${user.role}"></p>
+  
+            <form th:action="@{'/user/role/'+ ${user.id}}" method="post">
+              <label for="role" class="form-label">Select New role for user:
+                <select id="role" name="newRole">
+                  <option th:each="role : ${roles}" th:value="${role.toString()}" th:text="${role.toString()}"></option>
+                </select>
+              </label>
+
+              <button type="submit" class="btn btn-primary"> Change role</button>
+              <a class="btn btn-primary" href="/users">Return to List of users</a>
+
+            </form>
+          </div>
+  
+        </div>
+        
+      </div>
+
+    </div>
+
+
+  </div>
+    
 </body>
 </html>

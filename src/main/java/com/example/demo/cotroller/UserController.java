@@ -4,6 +4,10 @@ import java.util.Arrays;
 
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.config.AuthPasswordConfig;
+import com.example.demo.exceptions.UserCanNotBeNullException;
 import com.example.demo.mappers.UserSaveDtoToUserMapper;
 import com.example.demo.model.Role;
 import com.example.demo.model.dto.UserSaveDto;
@@ -57,11 +62,12 @@ class UserController {
     }
 
     // edycja:
-    @Secured({"ROLE_ADMIN"})
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/edit/{id}")
     public String editUser(@PathVariable Long id, Model model) {
         if (userService.findUserById(id).isPresent()) {
             model.addAttribute("user", userService.findUserById(id).get());
+            model.addAttribute("userRole", userService.findUserById(id).get().getRole().toString());
             return "/users/save-user";
         }else{
             model.addAttribute("error", "Current user with id="+id+" doesn't exist");
@@ -71,21 +77,35 @@ class UserController {
         }
         
     }
-    @Secured({"ROLE_ADMIN"})
+ @PreAuthorize("isAuthenticated()")
     @PostMapping("/user/update/{id}")
-    public String userUpdate(@PathVariable Long id, @Valid UserSaveDto userSaveDto, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    public String userUpdate(@PathVariable Long id, @Valid UserSaveDto userSaveDto, BindingResult bindingResult, RedirectAttributes redirectAttributes, Authentication authentication){
         if(bindingResult.hasErrors()){
             var errors= bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList();
             redirectAttributes.addFlashAttribute("errors", errors);
             return "redirect:/user/edit/"+id;
         }else{
             var user= UserSaveDtoToUserMapper.fromUserDtoToUserEntity(userSaveDto);
-            userService.updateUser(id, user);
-            return "redirect:/user/id/"+id;
+            var optionalExistingUser=userService.findUserById(id);
+            if(optionalExistingUser.isPresent()){
+                var existsUser= optionalExistingUser.get();
+                user.setRole(existsUser.getRole());
+                userService.updateUser(id, user);
+                if(authentication!=null && authentication.getAuthorities().stream().anyMatch(role-> role.getAuthority().equals("ROLE_ADMIN"))){
+                    return "redirect:/user/id/"+id;
+                }else{
+                    redirectAttributes.addFlashAttribute("message","Succes update of current user");
+                    return "redirect:/myAccount";
+                }
+
+            }else{
+                return"/error-page";
+            }
+
         }
 
     }
-    @Secured({"ROLE_ADMIN"})
+   
     @PostMapping("/user/save")
     public String insertUser( @Valid UserSaveDto userSaveDto,BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         var user = UserSaveDtoToUserMapper.fromUserDtoToUserEntity(userSaveDto);
@@ -103,7 +123,7 @@ class UserController {
             redirectAttributes.addFlashAttribute("user",user);
             return "redirect:/user/add";
         }else{
-            user.setRole(Role.CLIENT);
+            // user.setRole(Role.CLIENT);
             userService.saveUser(user);
             return "redirect:/";
         }
@@ -114,6 +134,7 @@ class UserController {
         userService.removeUserById(id);
         return"redirect:/users";
     }
+    @Secured({"ROLE_ADMIN"})
     @GetMapping("/user/role/{userId}")
     public String showChangeRoleForm(@PathVariable Long userId,Model model ){
         var user = userService.findUserById(userId).orElse(null);
@@ -121,17 +142,44 @@ class UserController {
             model.addAttribute("error", "User with id : "+userId+" doesn't exist");
             model.addAttribute("errorAction", "/users");
             model.addAttribute("return", "Return to list o users");
-
+            return "/error-page";
         }
         model.addAttribute("user", user);
         model.addAttribute("roles", Arrays.asList(Role.values()));
         return "/users/change-role";
     }
+
     @PostMapping("/user/role/{userId}")
-    public  String changeUserRole(@PathVariable Long userId,@RequestParam String newRole ){
+    public  String changeUserRole(@PathVariable Long userId,@RequestParam String newRole,Model model ){
         Role role = Role.valueOf(newRole);
-        userService.changeUserRole(userId, role);
+        try {
+            userService.changeUserRole(userId, role);
+        } catch (UserCanNotBeNullException e) {
+            model.addAttribute("error", "Change role for user with id : : "+userId+" is not possible");
+            model.addAttribute("errorAction", "/users");
+            model.addAttribute("return", "Return to list o users");
+            return "/error-page";
+
+        }
         return "redirect:/user/id/"+ userId;
+    }
+    @GetMapping("/myAccount")
+    public String showFormToEditLoggedUser(Model model){
+
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails= (UserDetails) authentication.getPrincipal();
+
+        String userEmail= userDetails.getUsername();
+
+        var optionalUser=userService.findUserByEmail(userEmail);
+        if(optionalUser.isPresent()){
+            var user= optionalUser.get();
+            model.addAttribute("user", user);
+            model.addAttribute("userRole", user.getRole().toString());
+            return "/users/save-user";
+        }else{
+            return"/error-page";
+        }
     }
 
 

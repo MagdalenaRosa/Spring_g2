@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.demo.model.Adresses;
 import com.example.demo.model.PhoneNumber;
+import com.example.demo.model.Role;
 import com.example.demo.model.User;
 import com.example.demo.model.dto.UserSaveDto;
 
@@ -25,6 +26,7 @@ public class UserSaveDtoToUserMapper {
                 .lastName(uSaveDto.getLastName())
                 .email(uSaveDto.getEmail())
                 .password(uSaveDto.getPassword())
+                .role(Role.CLIENT)
                 .phoneNumber(phones)
                 .adress(addres)
                 .build();

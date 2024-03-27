@@ -25,7 +25,7 @@ public class SecurityConfig {
     // public TestBean testBean(){
     //     return new TestBean();
     // }
-    private static final String[] PUBLIC_URI={"/","/product","/product/{pageNumber}","/categories","/categories/{pageNumber}","/contact","/productDetail/{id}","/categoryDetails/{id}","/user/add","/user/save"};
+    private static final String[] PUBLIC_URI={"/user/role/{userId}","/","/product","/product/{pageNumber}","/categories","/categories/{pageNumber}","/contact","/productDetail/{id}","/categoryDetails/{id}","/user/add","/user/save"};
 
     // @Bean
     // public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
